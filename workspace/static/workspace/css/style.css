@@ -1,0 +1,96 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+header nav {
+    float: right;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 600px;
+}
+
+#resource {
+    border: 1px solid black;
+    padding: 0 10px;
+}
+
+#resource button {
+    margin: 20px;
+    float: right;
+}
+
+#preview {
+    padding: 0 10px;
+    border: 1px solid black;
+}
+
+#preview #process-link {
+    display: none;
+    float: right;
+    margin-top: 10px;
+    background-color: #39459d;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#preview #process-link:hover {
+    background-color: #272f69;
+}
+
+#local-upload {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+#local-upload form {
+    background-color: #fefefe;
+    margin: 5px auto; /* 15% from the top and centered */
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+    height: 50%;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+  
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+#file-explorer a {
+    text-decoration: none;
+    color:#39459d;
+    cursor: pointer;
+}
+
+#file-explorer a:hover {
+    text-decoration: underline;
+}

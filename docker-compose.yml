@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    image: epdb_app:epdb
+    env_file:
+      - .env
+    container_name: app_container
+    command: gunicorn EPDB.wsgi:application --bind 0.0.0.0:8000
+
+

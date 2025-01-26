@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processor: {{file.file_name}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{% static 'process/js/script.js' %}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand bg-body-tertiary pb-0">
+        <div class="container-fluid">
+            <span>
+                <p class="navbar-brand mb-0 h1 pb-0">Processor</p>
+                <span class="navbar-text me-2">Current file: <i><b>{{file.file_name}}</b></i></span>
+            </span>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-toggle="tab" href="#tab1" role="tab">Images</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" href="#tab2" role="tab">Tables</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" href="#tab3" role="tab">Text</a>
+                </li>
+            </ul>
+            <div class="d-flex">
+                {% if user.is_authenticated %}
+                <span class="navbar-text me-3">Welcome, {{user.username}}.</span>
+                <a href="{% url 'logout' %}" class="btn btn-danger">Log Out</a>
+                {% else %}
+                <span class="navbar-text me-3">You are not logged in.</span>
+                <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-7 tab-content">
+                <div class="tab-pane fade show active" id="tab1">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="list-group list-group-flush mt-4 border" style="height: 87vh; overflow-y: scroll;">
+                                {% for image in images %}
+                                <button
+                                class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center"
+                                onclick="displayImage('{{MEDIA_URL}}{{user.username}}/{{image.id}}.png', '{{image.page}}', '{{image.id}}')">
+                                    <div class="vstack">
+                                        <span id="{{image.id}}">{{image.caption}}</span>
+                                        <small><i class="text-body-secondary">page: {{image.page}}</i></small>
+                                    </div>
+                                    <span onclick="deleteComponent('{{image.id}}')" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="mb-4 border">
+                                <nav class="navbar text-bg-light border-bottom border-body" data-bs-theme="dark">
+                                    <h5 class="h5 ms-2 mb-0">Properties</h5>
+                                    <div class="d-flex" id="image-toolbar">
+                                        <button class="btn btn-sm btn-primary me-2" onclick="saveComponent()">
+                                            <i class="fa fa-floppy-o me-1" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+
+                                        <button class="btn btn-sm btn-success me-2" onclick="editImage()">
+                                            <i class="fa fa-pencil-square-o me-1" aria-hidden="true"></i>
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <div class="d-none" id="image-edit-toolbar">
+                                        <button class="btn btn-sm btn-success me-2" onclick="doneEditImage()">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                            Done
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger me-2" onclick="cancelEditImage()">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </nav>  
+                                <div class="p-2">
+                                    <p>Caption: <i><span class="text-body-secondary" id="image-property-caption"></span></i></p>
+                                    <p>Page: <i><span class="text-body-secondary" id="image-property-page"></span></i></p>
+                                </div>
+                            </div>
+                            <div class="border p-2">
+                                <img class="img-fluid" style="max-height: 56vh;" src="" alt="" id="image-display">
+                                <div class="mx-auto p-2 text-center" 
+                                style="width: 500px; overflow-wrap: break-word;">
+                                    <b id="image-caption">Caption</b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab2">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="list-group list-group-flush mt-4 border" style="height: 87vh; overflow-y: scroll;">
+                                {% for table in tables %}
+                                <button
+                                class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center"
+                                onclick="displayTable('{{MEDIA_URL}}{{user.username}}/{{table.id}}.png', '{{table.page}}', '{{table.id}}')">
+                                    <div class="vstack">
+                                        <span id="{{table.id}}">{{table.caption}}</span>
+                                        <small><i class="text-body-secondary">page: {{table.page}}</i></small>
+                                    </div>
+                                    <span onclick="deleteComponent('{{table.id}}')" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="mb-4 border">
+                                <nav class="navbar text-bg-light border-bottom border-body" data-bs-theme="dark">
+                                    <h5 class="h5 ms-2 mb-0">Properties</h5>
+                                    <div class="d-flex" id="table-toolbar">
+                                        <button class="btn btn-sm btn-primary me-2" onclick="saveComponent()">
+                                            <i class="fa fa-floppy-o me-1" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+
+                                        <button class="btn btn-sm btn-success me-2" onclick="editTable()">
+                                            <i class="fa fa-pencil-square-o me-1" aria-hidden="true"></i>
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <div class="d-none" id="table-edit-toolbar">
+                                        <button class="btn btn-sm btn-success me-2" onclick="doneEditTable()">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                            Done
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger me-2" onclick="cancelEditTable()">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </nav>  
+                                <div class="p-2">
+                                    <p>Caption: <i><span class="text-body-secondary" id="table-property-caption"></span></i></p>
+                                    <p>Page: <i><span class="text-body-secondary" id="table-property-page"></span></i></p>
+                                </div>
+                            </div>
+                            <div class="border p-2">
+                                <img class="img-fluid" style="max-height: 56vh;" src="" alt="" id="table-display">
+                                <div class="mx-auto p-2 text-center" 
+                                style="width: 500px; overflow-wrap: break-word;">
+                                    <b id="table-caption">Caption</b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab3">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="list-group list-group-flush mt-4" style="overflow-y: scroll">
+                                <button class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center">
+                                    <div class="vstack" style="overflow-x: hidden">
+                                        file 1
+                                        <small><i class="text-body-secondary">page: 1</i></small>
+                                    </div>
+                                    <span class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="mb-4 border">
+                                <nav class="navbar text-bg-light border-bottom border-body" data-bs-theme="dark">
+                                    <h5 class="h5 ms-2 mb-0">Properties</h5>
+                                    <div class="d-flex">
+                                        <button class="btn btn-sm btn-primary me-2"><i class="fa fa-floppy-o me-1" aria-hidden="true"></i>Save</button>
+                                        <button class="btn btn-sm btn-success me-2"><i class="fa fa-pencil-square-o me-1" aria-hidden="true"></i>Edit</button>
+                                    </div>
+                                </nav>  
+                                <div class="p-2">
+                                    <div>Caption</div>
+                                    <div>Page</div>
+                                </div>
+                            </div>
+                            <img class="img-fluid" src="flower.jpg" alt="">
+                            <div class="mx-auto p-2 text-center" style="width: 500px;   overflow-wrap: break-word;"><b>Caption</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="border" style="height: 90vh;">
+                    <iframe height="100%" width="100%" src="{{MEDIA_URL}}{{user.username}}/{{file.id}}.{{file.file_ext}}" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

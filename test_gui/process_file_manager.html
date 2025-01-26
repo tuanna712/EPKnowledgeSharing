@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand bg-body-tertiary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Processor</span>
+            <form class="d-flex" role="search" action="">
+                <input class="form-control me-2" type="search" aria-label="Search" placeholder="Search your files...">
+                <button class="btn btn-outline-primary">Search</button>
+            </form>
+            <div class="d-flex">
+                <span class="navbar-text me-3">Welcome, user.</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-7">
+                <div class="list-group list-group-flush mt-4">
+                    <span class="list-group-item d-flex justify-content-between align-items-center">
+                        <h4 class="h5">File name</h4>
+                        <h4 class="h5">Upload date</h4>
+                        <button class="btn btn-primary"><i class="fa fa-plus me-2" aria-hidden="true"></i>New file</button>
+                    </span>
+
+                    <button class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center">
+                        File 1
+                        <small><i class="text-body-secondary">01/01/2024</i></small>
+                        <div class="d-flex">
+                            <span class="btn btn-outline-primary btn-sm me-2"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+                            <span class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="border ratio" style="--bs-aspect-ratio: 106%;">
+                    <iframe src="test.pdf" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

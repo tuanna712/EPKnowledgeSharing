@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100vh; margin: 0; padding: 0; overflow: hidden;">
+{% load static %}
+{% if user.is_authenticated %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace: Library</title>
+    <script src="{% static 'main/js/library.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'main/css/library.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+</head>
+
+<body style="background-color: #CDF5FD; margin: 0; padding: 0;">
+    <div class="d-flex flex-column">
+        <nav class="navbar" data-bs-theme="dark" style="background-color: #00A9FF;">
+            <div class="container-fluid">
+                <span class="">
+                    <span class="navbar-brand h1 mb-0 border-end border-light border-opacity-75 py-2 pe-2">
+                        <a href="#" class="text-decoration-none text-light">Workspace</a>
+                    </span>
+                    <span class="navbar-text lead text-white ps-0 ms-0">Library</span>
+                </span>
+                <span class="navbar-text text-light py-0">
+                    <a type="button" class="btn btn-info py-1 my-0" href="{% url 'chat:index' %}">AI Assistant</a>
+                    <!-- <a type="button" class="btn btn-info py-1 my-0" href="{% url 'process:explorer' %}">Processor</a> -->
+                </span>
+                <span class="d-flex">
+                    {% if user.is_authenticated %}
+                    <span class="navbar-text text-light me-3">Welcome, {{user.username}}.</span>
+                    <a href="{% url 'login' %}" class="btn btn-light">Log Out</a>
+                    {% else %}
+                    <span class="navbar-text me-3">You are not logged in.</span>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+                    {% endif %}
+                </span>
+            </div>
+        </nav>
+    
+        <div class="container-fluid d-flex flex-column flex-grow-1">
+            <!-- Side navigation -->
+            <div class="row flex-grow-1">
+                <!-- Filter -->
+                <div class="col-2 border-end bg-light d-flex flex-column pb-2" style="height: calc(100vh - 50px);">
+                    <p class="lead border-bottom me-5 mt-2">Filter options</p>
+    
+                    <!-- Filter accordion -->
+                    <div class="accordion accordion-flush border-bottom overflow-y-auto flex-grow-1" id="filters"
+                        style="overflow-x: hidden;">
+    
+                        {% for filter, list in filters.items %}
+                        <!-- Item -->
+                        <div class="accordion-item border">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#filter-{{filter}}" aria-expanded="false"
+                                    aria-controls="flush-collapseOne">
+                                    <div>
+                                        <p class="p-0 m-0">{{filter}}</p>
+                                        <small class="text-secondary" style="font-size: 0.8rem;"
+                                            id="checked-list-{{filter}}"></small>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="filter-{{filter}}" class="accordion-collapse collapse" data-bs-parent="#filters">
+                                <div class="accordion-body" id="checkboxes-{{filter}}" style="overflow-wrap: break-word;">
+    
+                                    {% for item in list %}
+                                    <div class="form-check">
+                                        <input type="checkbox" name="{{filter}}" id="{{item}}" class="form-check-input"
+                                            onchange="changeChoice('checked-list-{{filter}}', 
+                                            'checkboxes-{{filter}}')">
+                                        <label for="{{item}}" class="form-check-label">{{item}}</label>
+                                    </div>
+                                    {% endfor %}
+    
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+    
+                <!-- Search tab -->
+                <div class="col px-0 bg-white border-end px-3 pt-3 pb-2 flex-grow-1 d-flex flex-column" style="height: calc(100vh - 50px);">
+                    <!-- Search bar -->
+                    <form action="{% url 'search:results' %}" method="get">
+                        <div class="input-group">
+                            <input type="text" class="form-control" aria-label="Text input" placeholder="Type to search ..."
+                                name="search_text">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Search
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" id="hi">
+                                <li><button class="dropdown-item" type="submit" name="search_option"
+                                        value="title">Title</button></li>
+                                <li><button class="dropdown-item" name="search_option" value="content">Content</button></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><button class="dropdown-item" name="search_option" value="both">Both</button></li>
+                            </ul>
+                        </div>
+                    </form>
+    
+                    <div class="list-group list-group-flush mt-3 flex-grow-1 overflow-y-auto" id="group-files">
+                        {% for doc in docs %}
+                        <button class="list-group-item list-group-item-action list-group-item-light"
+                            onclick="openPreview('{{doc.ServerRedirectedEmbedUri}}')">
+                            <div class="ms-1 me-auto d-flex justify-content-between" id="button-content">
+                                <a href="#" class="fw-semibold text-decoration-none">{{doc.Name}}</a>
+                            </div>
+                            <div class="ms-1 me-auto text-secondary fst-italic">
+                                <span class="me-3">Block: {{doc.Block}}</span>
+                                <span class="me-3">Well: {{doc.WellName}}</span>
+                                <span class="me-3">Year: {{doc.YearOfPublication}}</span>
+                            </div>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+    
+                <div class="col-5 bg-light">
+                    <iframe src="" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen
+                        id="preview"></iframe>
+                </div>
+            </div>
+        </div>
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    </div>
+</body>
+
+{% else %}
+    <p>You need to <a href="{% url 'login' %}">login</a> to view this content.</p>
+{% endif %}
+</html>
